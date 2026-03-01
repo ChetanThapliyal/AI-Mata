@@ -13,7 +13,7 @@ class MatriarchApp : Application() {
         
         // This is the static API key from the Python backend's .env.
         // In a real production app, never hardcode the user token on the client.
-        val apiKey = "nnkwznyy3z47" 
+        val apiKey = "t53u7eu48q4h" 
         
         // Use the dynamically generated API_TOKEN (acts as both backend auth and Stream SDK user token)
         val userToken = BuildConfig.API_TOKEN
