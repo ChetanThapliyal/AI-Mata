@@ -28,7 +28,7 @@ interface MatriarchApiService {
 
 object MatriarchNetwork {
     // Azure Container Apps backend (HTTPS, no port needed)
-    private const val BASE_URL = "https://ca-aimata-backend--0000001.salmonmushroom-b4b13164.eastus2.azurecontainerapps.io/"
+    private const val BASE_URL = "https://ca-aimata-backend.salmonmushroom-b4b13164.eastus2.azurecontainerapps.io/"
 
     private val authInterceptor = Interceptor { chain ->
         val original = chain.request()
