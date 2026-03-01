@@ -23,6 +23,17 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from vision_agents.core import Agent, AgentLauncher, Runner, User
 from vision_agents.plugins import deepgram, elevenlabs, gemini, getstream
+from getstream.models import CallRequest
+
+# MONKEY PATCH: Fix vision_agents getstream plugin's create_call for Server-Side Auth in v2.7.x
+async def patched_create_call(self, call_id: str, **kwargs):
+    call_type = kwargs.get("call_type", "default")
+    call = self.client.video.call(call_type, call_id)
+    # The vision_agents plugin passes a dict data={"created_by_id": ...} which gets rejected properly by the Python SDK
+    await call.get_or_create(data=CallRequest(created_by_id=self.agent_user_id))
+    return call
+    
+getstream.Edge.create_call = patched_create_call
 
 from .prompts import MOTHER_SYSTEM_PROMPT
 

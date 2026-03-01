@@ -9,7 +9,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.matriarch.ai.MatriarchApp
 import com.matriarch.ai.ui.overlay.OverlayHud
-import io.getstream.video.android.compose.permission.LaunchCallPermissions
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import io.getstream.video.android.compose.theme.VideoTheme
 import io.getstream.video.android.compose.ui.components.call.renderer.ParticipantVideo
 
@@ -21,14 +25,31 @@ fun VisionStreamScreen(
     val client = remember { MatriarchApp.client() }
     val call = remember { client.call("default", "matriarch-session-1") }
 
-    var permissionsGranted by remember { mutableStateOf(false) }
+    val requiredPermissions = arrayOf(
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
+    )
 
-    LaunchCallPermissions(
-        call = call,
-        onAllPermissionsGranted = {
-            permissionsGranted = true
+    var permissionsGranted by remember {
+        mutableStateOf(
+            requiredPermissions.all {
+                ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
+            }
+        )
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { perms ->
+            permissionsGranted = perms.values.all { it }
         }
     )
+
+    LaunchedEffect(Unit) {
+        if (!permissionsGranted) {
+            permissionLauncher.launch(requiredPermissions)
+        }
+    }
 
     LaunchedEffect(permissionsGranted) {
         if (permissionsGranted) {
