@@ -34,7 +34,6 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
-
 # Terraform state
 *.tfstate
 *.tfstate.*
@@ -47,3 +46,9 @@ android-app/app/build/
 android-app/build/
 android-app/**/*.apk
 android-app/**/*.aab
+
+# Additional ignored paths from KALI audit
+document/*
+infra/terraform.tfvars
+infra/.terraform/
+infra/*.tfstate*
