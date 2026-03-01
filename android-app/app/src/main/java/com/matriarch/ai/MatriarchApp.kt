@@ -15,8 +15,8 @@ class MatriarchApp : Application() {
         // In a real production app, never hardcode the user token on the client.
         val apiKey = "nnkwznyy3z47" 
         
-        // Valid for 30 days, generated locally for testing to bypass SDK parser crash.
-        val userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYW5kcm9pZC1tYXRyaWFyY2gtdXNlciIsImV4cCI6MTc3NDk0NTEyM30.cwlLNQmWwKRZf6CySWbcCFY87KnHwlyVz0sf0fukj6M" 
+        // Use the dynamically generated API_TOKEN (acts as both backend auth and Stream SDK user token)
+        val userToken = BuildConfig.API_TOKEN
         val userId = "android-matriarch-user"
 
         val user = User(
