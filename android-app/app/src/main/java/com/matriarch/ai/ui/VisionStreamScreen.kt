@@ -33,7 +33,16 @@ fun VisionStreamScreen(
     LaunchedEffect(permissionsGranted) {
         if (permissionsGranted) {
             val result = call.join(create = true)
-            result.onError {
+            result.onSuccess {
+                // Enable audio and video so Maya can see and hear
+                call.camera.setEnabled(true)
+                call.microphone.setEnabled(true)
+                
+                // Switch to back camera
+                if (call.camera.direction.value == io.getstream.video.android.core.CameraDirection.Front) {
+                    call.camera.flip()
+                }
+            }.onError {
                 Toast.makeText(context, "Error joining: ${it.message}", Toast.LENGTH_LONG).show()
             }
         }
