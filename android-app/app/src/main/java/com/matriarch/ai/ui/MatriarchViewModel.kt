@@ -26,10 +26,10 @@ class MatriarchViewModel : ViewModel() {
                 val request = SessionStartRequest(call_id = callId)
                 val response = MatriarchNetwork.api.startSession(request)
                 
-                if (response.status == "success") {
+                if (response.session_id.isNotEmpty()) {
                     _currentThought.value = "Maya is watching..."
                 } else {
-                    _currentThought.value = "Maya is busy: ${response.status}"
+                    _currentThought.value = "Maya is busy"
                 }
             } catch (e: Exception) {
                 Log.e("MatriarchViewModel", "Session start failed", e)

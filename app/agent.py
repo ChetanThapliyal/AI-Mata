@@ -40,7 +40,8 @@ class JWTAuthMiddleware(BaseHTTPMiddleware):
     """Protects /session/start with JWT authentication."""
 
     async def dispatch(self, request: Request, call_next):
-        if request.url.path == "/session/start":
+        # Only protect the /sessions endpoint (the Vision Agents SDK route for joining calls)
+        if request.url.path == "/sessions" and request.method == "POST":
             auth_header = request.headers.get("Authorization")
             if not auth_header or not auth_header.startswith("Bearer "):
                 return JSONResponse(
@@ -115,24 +116,12 @@ def build_runner() -> Runner:
             join_call=join_call,
         )
     )
-    # Attach JWT middleware to the FastAPI app the Runner exposes
-    runner._create_fastapi_app  # ensure internal app is initialized
+    # Attach JWT middleware to the live FastAPI app the Runner serves
+    runner.fast_api.add_middleware(JWTAuthMiddleware)
     return runner
 
 
 # Entry point: `python -m app.agent serve/run` via Runner.cli()
-# The Runner's CLI handles `serve` and `run` subcommands natively.
-# We patch the app BEFORE cli() hands off to uvicorn.
 if __name__ == "__main__":
     runner = build_runner()
-
-    # Inject JWT middleware into the Runner's internal FastAPI app.
-    # We must call _create_fastapi_app with default options to get the app ref,
-    # then add middleware before the CLI starts uvicorn.
-    from vision_agents.core.runner.http.options import ServeOptions
-
-    serve_options = ServeOptions()
-    app = runner._create_fastapi_app(serve_options)
-    app.add_middleware(JWTAuthMiddleware)
-
     runner.cli()
