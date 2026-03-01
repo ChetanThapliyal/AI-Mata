@@ -1,0 +1,26 @@
+package com.matriarch.ai
+
+import android.os.Bundle
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.core.view.WindowCompat
+import com.matriarch.ai.ui.VisionStreamScreen
+import com.matriarch.ai.ui.theme.MatriarchTheme
+
+class MainActivity : ComponentActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        
+        // Enable edge-to-edge layout and keep the screen on constantly
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        setContent {
+            MatriarchTheme {
+                VisionStreamScreen()
+            }
+        }
+    }
+}
