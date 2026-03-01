@@ -34,3 +34,8 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+document/*
+# Terraform secrets
+infra/terraform.tfvars
+infra/.terraform/
+infra/*.tfstate*
