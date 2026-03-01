@@ -21,15 +21,23 @@ fun VisionStreamScreen(
     val client = remember { MatriarchApp.client() }
     val call = remember { client.call("default", "matriarch-session-1") }
 
+    var permissionsGranted by remember { mutableStateOf(false) }
+
     LaunchCallPermissions(
         call = call,
         onAllPermissionsGranted = {
+            permissionsGranted = true
+        }
+    )
+
+    LaunchedEffect(permissionsGranted) {
+        if (permissionsGranted) {
             val result = call.join(create = true)
             result.onError {
                 Toast.makeText(context, "Error joining: ${it.message}", Toast.LENGTH_LONG).show()
             }
         }
-    )
+    }
 
     // Observe connection & participants
     val participants by call.state.participants.collectAsState()
